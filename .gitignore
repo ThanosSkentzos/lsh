@@ -1,0 +1,5 @@
+*.pickle*
+*.npy
+*.lprof
+__pycache__
+*.lock
