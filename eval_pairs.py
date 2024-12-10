@@ -5,7 +5,7 @@ from tqdm import tqdm
 df,u,m = get_data()
 
 #%%
-values = df["movies"].values
+values = df["movies"]
 with open(file_path,"r") as f:
     pairs = set([tuple(map(int,i.strip().split(','))) for i in f.readlines()])
 pair_scores = []
@@ -16,12 +16,25 @@ for pair in pairs:
 #%%
 import pandas as pd
 import matplotlib.pyplot as plt
-df = pd.DataFrame(sorted(pair_scores,key=lambda x:x[2]))
-df[2].plot(marker='.',linestyle='none',ylabel='similarity',xlabel='pair number',title='Pair similarity')
+from main import get_data
+scores = pd.DataFrame(sorted(pair_scores,key=lambda x:x[2]))
+pairs = scores.tail(5)[[0,1]].values
+values = get_data()[0]["movies"][list(set(pairs.ravel()))]
+for src,dest in pairs:
+    vsrc = values[src]
+    vdest = values[dest]
+    inter = set(vsrc).intersection(set(vdest))
+    un = set(vsrc).union(set(vdest))
+    print(f"Pair ({src},{dest}): -> {len(vsrc)},{len(vdest)}",end="")
+    print(f" inter/union= {len(inter)}",end="/")
+    print(f"{len(un)}",end="")
+    print(f" = {len(inter)/(len(un))}")
+#%%
+scores[2].plot(marker='.',linestyle='none',ylabel='similarity',xlabel='pair number',title='Pair similarity')
 plt.savefig("linplot.png")
 #%%
-y = df.index
-x = sorted(df[2].values,reverse=True)
+y = scores.index
+x = sorted(scores[2].values,reverse=True)
 plt.figure()
 plt.scatter(x,y,marker='.')
 plt.yscale('log'),plt.xscale('log')

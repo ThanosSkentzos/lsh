@@ -157,7 +157,7 @@ def split_sig(sig, b=10):
 def calculate_hashes(sigs, b=10):
     hashes = {}
     desc = f"Calculating hashes for b={b}".ljust(ncols // 3)
-    for i, sig in enumerate(
+    for user_idx, sig in enumerate(
         tqdm(
             sigs,
             desc=desc,
@@ -170,7 +170,7 @@ def calculate_hashes(sigs, b=10):
         hashes_list = split_sig(sig, b)
         for hash_arr in hashes_list:
             hash = ",".join([f"{i}" for i in sorted(list(set(hash_arr)))])
-            hashes.setdefault(hash, set()).add(i)
+            hashes.setdefault(hash, set()).add(user_idx+1)
     candidate_sets = [v for v in hashes.values() if len(v) > 1]
     return candidate_sets
 
@@ -205,8 +205,8 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
             if pair in similars:
                 continue
             tried.add(pair)
-            data1 = values[pair[0]]
-            data2 = values[pair[1]]
+            data1 = values[pair[0]-1]
+            data2 = values[pair[1]-1]
             sim = jac_sim(data1, data2)
             if sim > max_val:
                 max_val = sim
@@ -253,7 +253,7 @@ def save_new_pairs(file_path, new_pairs):
 
 def parse_args():
     # Default values
-    scale = 5
+    scale = 4
     b = 15 * scale
     signature_len = 100*scale
     n_bands = 1
