@@ -211,7 +211,8 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
             if sim > max_val:
                 max_val = sim
             if sim > threshold:
-                similars.add(tuple([*pair, sim]))
+                # similars.add(tuple([*pair, sim]))
+                similars.add(tuple(pair))
                 save_new_pairs("results.txt", similars)
     return similars
 
@@ -295,8 +296,8 @@ def find_pairs_graph(values, file_path, threshold=0.5):
 
 def parse_args():
     # Default values
-    b = 15
-    signature_len = 80
+    b = 10
+    signature_len = 100
     n_bands = 1
     random_state = 1 
 
