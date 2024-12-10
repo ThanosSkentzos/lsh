@@ -3,3 +3,5 @@
 *.lprof
 __pycache__
 *.lock
+results.txt
+.nfs000000000c6dd10a0000026e
