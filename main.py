@@ -298,7 +298,7 @@ def parse_args():
     b = 15
     signature_len = 80
     n_bands = 1
-    random_state = 42
+    random_state = 1 
 
     args = sys.argv[1:]
     # Simple argument parsing
