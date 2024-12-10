@@ -291,13 +291,15 @@ def find_pairs_graph(values, file_path, threshold=0.5):
             new_pairs.add(tuple(pair))
             new_pair_scores.append((*pair, sim))
             pbar.set_postfix({"found": len(new_pairs)})
+    print(f"Found {len(new_pairs)} new pairs from neighbors")
     return new_pairs, new_pair_scores
 
 
 def parse_args():
     # Default values
-    b = 10
-    signature_len = 100
+    scale = 5
+    b = 15 * scale
+    signature_len = 100*scale
     n_bands = 1
     random_state = 1 
 
@@ -369,8 +371,8 @@ def main():
         # file_path = f"old/results_{band_index}_{signature_len}_{random_state}.txt"
         # new_1, _ = save_new_pairs(file_path, new_pairs)
 
-        # graph_pairs, _ = find_pairs_graph(values, file_path, threshold)
-        # new_2, num_all = save_new_pairs(file_path, graph_pairs)
+        graph_pairs, _ = find_pairs_graph(values, file_path, threshold)
+        new_2, num_all = save_new_pairs(file_path, graph_pairs)
 
         # Remove the fancy printing lines
         # Instead, write a clean CSV line:
