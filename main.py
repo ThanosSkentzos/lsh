@@ -251,50 +251,6 @@ def save_new_pairs(file_path, new_pairs):
     return len(new), len(all_pairs)
 
 
-def find_pairs_graph(values, file_path, threshold=0.5):
-    all_pairs = get_saved_pairs(file_path)
-    user_nbrs = {}
-    for a, b in sorted(list(all_pairs)):
-        user_nbrs.setdefault(a, []).append(b)
-        user_nbrs.setdefault(b, []).append(a)
-
-    user_candidates = {}
-    for user in user_nbrs:
-        user_candidates[user] = [
-            n
-            for nbr in user_nbrs[user]
-            for n in user_nbrs[nbr]
-            if n not in user_nbrs[user] and n != user
-        ]
-
-    pairs = (
-        set(
-            [tuple(sorted((u, c))) for u in user_candidates for c in user_candidates[u]]
-        )
-        - all_pairs
-    )
-    new_pairs = set()
-    new_pair_scores = []
-    desc = "Finding similar neighbors".ljust(ncols // 3)
-    pbar = tqdm(
-        pairs,
-        desc=desc,
-        position=0,
-        ncols=ncols,
-        leave=True,
-        mininterval=update_interval,
-    )
-    for pair in pbar:
-        sim = jac_sim(*values[list(pair)])
-        if sim > threshold:
-            pair = sorted(pair)
-            new_pairs.add(tuple(pair))
-            new_pair_scores.append((*pair, sim))
-            pbar.set_postfix({"found": len(new_pairs)})
-    print(f"Found {len(new_pairs)} new pairs from neighbors")
-    return new_pairs, new_pair_scores
-
-
 def parse_args():
     # Default values
     scale = 5
@@ -368,12 +324,6 @@ def main():
         t = perf_counter()
         new_pairs = set([i[:2] for i in similars])
 
-        # file_path = f"old/results_{band_index}_{signature_len}_{random_state}.txt"
-        # new_1, _ = save_new_pairs(file_path, new_pairs)
-
-        graph_pairs, _ = find_pairs_graph(values, file_path, threshold)
-        new_2, num_all = save_new_pairs(file_path, graph_pairs)
-
         # Remove the fancy printing lines
         # Instead, write a clean CSV line:
         with open("results_lsh.csv", "a") as f:
@@ -385,13 +335,6 @@ def main():
         # if num_all > 1200:
         #     return 0
 
-    i = 0
-    print(f"Running edge prediction {i} times")
-    for _ in range(i):
-        graph_pairs, _ = find_pairs_graph(values, file_path, threshold)
-        num_new_pairs, num_all_pairs = save_new_pairs(file_path, graph_pairs)
-        if num_new_pairs == 0:
-            break
     t = perf_counter()
     print(f"Finished in {t - t0:.2f} seconds")
 
