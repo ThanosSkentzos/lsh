@@ -121,7 +121,7 @@ def minhash_perms(row, perms, vocab):
 
 def calculate_minhashes(values, perms, vocab):
     sigs = []
-    desc = f"Calculating minhashes".ljust(ncols // 3)
+    desc = f"Calculating minhashes".ljust(ncols // 3 -7)
     for row in tqdm(
         values, desc=desc, position=0, ncols=ncols, mininterval=update_interval
     ):
@@ -155,7 +155,7 @@ def split_sig(sig, b=10):
 
 def calculate_hashes(sigs, b=10):
     hashes = {}
-    desc = f"Calculating hashes for b={b}".ljust(ncols // 3)
+    desc = f"Calculating hashes for b={b}".ljust(ncols // 3 -7)
     for user_idx, sig in enumerate(
         tqdm(
             sigs,
