@@ -125,7 +125,7 @@ def minhash_perms(row, perms, vocab):
 @profile
 def calculate_minhashes(values, perms, vocab):
     sigs = []
-    desc = f"Calculating minhashes".ljust(ncols // 3)
+    desc = f"Calculating minhashes".ljust(ncols // 3 - 5)
     for row in tqdm(
         values, desc=desc, position=0, ncols=ncols, mininterval=update_interval
     ):
@@ -186,7 +186,7 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     max_val = 0
     similars = set()
     global skipped
-    desc = "Evaluating candidates".ljust(ncols // 3)
+    desc = "Evaluating candidates".ljust(ncols // 3 -5)
     pbar = tqdm(
         candidate_sets,
         desc=desc,
