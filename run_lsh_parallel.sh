@@ -7,9 +7,9 @@
 # or if the script doesn't do that, you can write it once:
 # echo "band,signature_len,seed,pairs_found,time" >> results_lsh.csv
 
-parallel -j $(($(nproc) - 10)) \
-    python lsh.py -b {2} -s {3} {1} \
-    ::: {6..10} \
-    ::: $(seq 10 1 20) \
-    ::: $(seq 60 5 100)
+parallel -j 4 \
+    python main.py -b {2} -s {3} {1} \
+    ::: {6..7} \
+    ::: $(seq 50 10 100) \
+    ::: $(seq 100 100 1000)
 

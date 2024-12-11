@@ -31,7 +31,7 @@ for src,dest in pairs:
     print(f" = {len(inter)/(len(un))}")
 #%%
 scores[2].plot(marker='.',linestyle='none',ylabel='similarity',xlabel='pair number',title='Pair similarity')
-plt.savefig("linplot.png")
+plt.savefig("images/linplot.png")
 #%%
 y = scores.index
 x = sorted(scores[2].values,reverse=True)
@@ -41,7 +41,7 @@ plt.yscale('log'),plt.xscale('log')
 plt.xlabel("Similarity Score")
 plt.ylabel("Cumulative Count")
 plt.title("Cumulative Count vs Similarity Score")
-plt.savefig("logplot.png")
+plt.savefig("images/logplot.png")
 plt.show()
 # %%
 from lsh import find_pairs_graph

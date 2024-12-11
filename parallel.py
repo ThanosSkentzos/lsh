@@ -180,6 +180,8 @@ def calculate_hashes(sigs, b=10):
 def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     from itertools import combinations
 
+    start = perf_counter()
+    stop=False
     max_val = 0
     similars = set()
     global skipped
@@ -194,11 +196,18 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     )
     for cs in pbar:
         pbar.set_postfix({"found": len(similars)})
+        if stop:
+            break
         if len(cs) > 100:
             # continue
             cs = random.sample(list(cs), 100)
         pairs = combinations(cs, 2)
         for pair in pairs:
+            now = perf_counter()
+            if now-start>1000:
+                stop=True
+            if stop:
+                break
             pair = tuple(sorted(pair))
             if pair in tried:
                 skipped += 1
@@ -214,7 +223,7 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
             if sim > threshold:
                 # similars.add(tuple([*pair, sim]))
                 similars.add(tuple(pair))
-                save_new_pairs("results.txt", similars)
+    save_new_pairs("results.txt", similars)
     return similars
 
 
