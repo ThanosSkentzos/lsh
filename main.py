@@ -47,13 +47,16 @@ def get_data():
     import pickle
 
     if exists("data.pickle"):
-        with open("data.pickle", "rb") as f:
-            df, users, movies = pickle.load(f)
-    else:
-        data = load_data()
-        df, users, movies = process_data(data)
-        with open("data.pickle", "wb") as f:
-            pickle.dump((df, users, movies), f)
+        try:
+            with open("data.pickle", "rb") as f:
+                df, users, movies = pickle.load(f)
+                return df,users,movies
+        except(EOFError,pickle.UnpicklingError):
+            print("Error reading data, generating from stratch...") 
+    data = load_data()
+    df, users, movies = process_data(data)
+    with open("data.pickle", "wb") as f:
+        pickle.dump((df, users, movies), f)
     return df, users, movies
 
 

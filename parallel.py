@@ -1,12 +1,12 @@
 # %%
 # READ DATA
 import numpy as np
-from line_profiler import profile
 from tqdm import tqdm
 import pandas as pd
 import sys
 import random
 from time import perf_counter
+from multiprocessing import Lock
 
 ncols = 100
 update_interval = 1
@@ -47,17 +47,19 @@ def get_data():
     import pickle
 
     if exists("data.pickle"):
-        with open("data.pickle", "rb") as f:
-            df, users, movies = pickle.load(f)
-    else:
-        data = load_data()
-        df, users, movies = process_data(data)
-        with open("data.pickle", "wb") as f:
-            pickle.dump((df, users, movies), f)
+        try:
+            with open("data.pickle", "rb") as f:
+                df, users, movies = pickle.load(f)
+                return df,users,movies
+        except(EOFError,pickle.UnpicklingError):
+            print("Error reading data, generating from stratch...") 
+    data = load_data()
+    df, users, movies = process_data(data)
+    with open("data.pickle", "wb") as f:
+        pickle.dump((df, users, movies), f)
     return df, users, movies
 
 
-@profile
 def jac_sim(li, lj):
     """
     Jaccard similarity assuming list inputs of movie ids, not entire vector
@@ -100,7 +102,6 @@ def calculate_perms(indexes, movies, num_perms=100):
     return perm_movie_idx
 
 
-@profile
 def generate_minhash(row, vocab):
     def minhash(perm):
         for m in vocab:
@@ -112,14 +113,12 @@ def generate_minhash(row, vocab):
     return minhash
 
 
-@profile
 def minhash_perms(row, perms, vocab):
     mh = generate_minhash(row, vocab)
     sig = list(map(mh, perms))
     return np.array(sig)
 
 
-@profile
 def calculate_minhashes(values, perms, vocab):
     sigs = []
     desc = f"Calculating minhashes".ljust(ncols // 3)
@@ -154,7 +153,6 @@ def split_sig(sig, b=10):
     return splits
 
 
-@profile
 def calculate_hashes(sigs, b=10):
     hashes = {}
     desc = f"Calculating hashes for b={b}".ljust(ncols // 3)
@@ -176,12 +174,11 @@ def calculate_hashes(sigs, b=10):
     return candidate_sets
 
 
-@profile
 def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     from itertools import combinations
-
     start = perf_counter()
     stop=False
+    lock = Lock()
     max_val = 0
     similars = set()
     global skipped
@@ -223,7 +220,8 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
             if sim > threshold:
                 # similars.add(tuple([*pair, sim]))
                 similars.add(tuple(pair))
-    save_new_pairs("results.txt", similars)
+                with lock:
+                    save_new_pairs("results.txt", similars)
     return similars
 
 
@@ -305,7 +303,6 @@ def parse_args():
     return b, signature_len, n_bands, random_state
 
 
-@profile
 def main():
 
     b, signature_len, n_bands, random_state = parse_args()
