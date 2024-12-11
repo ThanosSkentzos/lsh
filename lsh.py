@@ -6,7 +6,7 @@ from tqdm import tqdm
 import pandas as pd
 import sys
 import random
-ncols=100
+ncols=80
 update_interval=1
 global skipped
 skipped=0

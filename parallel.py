@@ -8,7 +8,7 @@ import random
 from time import perf_counter
 from multiprocessing import Lock
 
-ncols = 100
+ncols = 80
 update_interval = 1
 global skipped
 skipped = 0
