@@ -196,7 +196,7 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
         if stop:
             break
         if len(cs) > 100:
-            # continue
+            continue
             cs = random.sample(list(cs), 100)
         pairs = combinations(cs, 2)
         for pair in pairs:

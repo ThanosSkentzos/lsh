@@ -198,7 +198,7 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     for cs in pbar:
         pbar.set_postfix({"found": len(similars)})
         if len(cs) > 100:
-            # continue
+            continue
             cs = random.sample(list(cs), 100)
         pairs = combinations(cs, 2)
         for pair in pairs:
