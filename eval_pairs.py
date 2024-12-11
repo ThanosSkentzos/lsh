@@ -43,11 +43,5 @@ plt.ylabel("Cumulative Count")
 plt.title("Cumulative Count vs Similarity Score")
 plt.savefig("images/logplot.png")
 plt.show()
-# %%
-from lsh import find_pairs_graph
 
 #%%
-new_pairs,new_pair_scores = find_pairs_graph(values,file_path)
-df_new = pd.DataFrame(sorted(pair_scores+new_pair_scores))
-
-# %%
