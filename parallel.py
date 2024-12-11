@@ -220,8 +220,8 @@ def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
             if sim > threshold:
                 # similars.add(tuple([*pair, sim]))
                 similars.add(tuple(pair))
-                with lock:
-                    save_new_pairs("results.txt", similars)
+    with lock:
+        save_new_pairs("results.txt", similars)
     return similars
 
 
