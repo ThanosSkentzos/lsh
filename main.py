@@ -1,7 +1,7 @@
 # %%
 # READ DATA
 import numpy as np
-from line_profiler import profile
+#from line_profiler import profile
 from tqdm import tqdm
 import pandas as pd
 import sys
@@ -60,7 +60,7 @@ def get_data():
     return df, users, movies
 
 
-@profile
+#@profile
 def jac_sim(li, lj):
     """
     Jaccard similarity assuming list inputs of movie ids, not entire vector
@@ -103,7 +103,7 @@ def calculate_perms(indexes, movies, num_perms=100):
     return perm_movie_idx
 
 
-@profile
+#@profile
 def generate_minhash(row, vocab):
     def minhash(perm):
         for m in vocab:
@@ -115,14 +115,14 @@ def generate_minhash(row, vocab):
     return minhash
 
 
-@profile
+#@profile
 def minhash_perms(row, perms, vocab):
     mh = generate_minhash(row, vocab)
     sig = list(map(mh, perms))
     return np.array(sig)
 
 
-@profile
+#@profile
 def calculate_minhashes(values, perms, vocab):
     sigs = []
     desc = f"Calculating minhashes".ljust(ncols // 3 - 7)
@@ -157,7 +157,7 @@ def split_sig(sig, b=10):
     return splits
 
 
-@profile
+#@profile
 def calculate_hashes(sigs, b=10):
     hashes = {}
     desc = f"Calculating hashes for b={b}".ljust(ncols // 3)
@@ -179,7 +179,7 @@ def calculate_hashes(sigs, b=10):
     return candidate_sets
 
 
-@profile
+#@profile
 def evaluate_candidates(candidate_sets, threshold, values, tried=set()):
     from itertools import combinations
 
@@ -299,7 +299,7 @@ def parse_args():
     return b, signature_len, n_bands, random_state
 
 
-@profile
+#@profile
 def main():
 
     b, signature_len, n_bands, random_state = parse_args()
